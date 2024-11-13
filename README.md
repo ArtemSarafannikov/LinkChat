@@ -8,3 +8,6 @@
 
 ###### Run server: 
 `daphne -p 8000 linkchat.asgi:application`
+
+###### Collect all static files in one folder for daphne: 
+`python manage.py collectstatic `
