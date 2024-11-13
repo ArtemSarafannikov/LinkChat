@@ -6,11 +6,16 @@
     {% load static %}
 </head>
 <body>
-    <h2>Chat Room ({{ user.username }})</h2>
+    <h2>Chat "{{ chat.name }}"</h2>
+    <h2>Сhat ID = {{chat.id}}</h2>
+    <h2>Your nickname: {{ user.username }}</h2>
     <div id="chat-log" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;"></div>
     <input id="chat-message-input" type="text" size="100" placeholder="Введите сообщение">
     <button id="chat-message-submit">Отправить</button>
 
     <script src="{% static 'chat.js' %}"></script>
+    <script>
+        initChatScript({{ chat.id }}, "{{ user.username }}");
+    </script>
 </body>
 </html>

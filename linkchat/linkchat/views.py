@@ -11,7 +11,7 @@ def signup_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('index')
+            return redirect('index', chat_id=1)
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
@@ -27,5 +27,5 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('index')
+                return redirect('index', chat_id=1)
     return render(request, 'login.html', {'form': form})
