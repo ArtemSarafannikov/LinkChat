@@ -178,6 +178,14 @@ body {
   margin-top: 90px;
 }
 
+.actions-container-space {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 90px;
+}
+
 .logo {
   display: flex;
   justify-content: start;
@@ -235,6 +243,12 @@ input:focus {
 
 .register-link:hover {
   text-decoration: underline;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
 }
 
 .login-button {

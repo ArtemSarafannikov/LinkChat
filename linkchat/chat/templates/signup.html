@@ -45,20 +45,29 @@
 
                         <div class="input-fields-container">
                             <div class="input-field">
-<!--                                <label for="username">Логин</label>-->
                                 <h3>Логин</h3>
                                 <input type="text" id="username" name="username" required>
                             </div>
+
+                            {% if form.username.errors %}
+                            <div class="error-message">
+                                {{ form.username.errors|striptags }}
+                            </div>
+                            {% endif %}
+
                             <div class="input-field">
                                 <h3>Почта</h3>
-<!--                                <label for="email">Почта</label>-->
                                 <input type="email" id="email" name="email" required>
+                            </div>
+
+                            <div class="error-message-email hidden" id="email-error">
+                                <p>*Неправильно введена почта</p>
                             </div>
                         </div>
                     </div>
 
-
-                    <div class="actions-container">
+                    <div class="actions-container-space">
+                        <a href="/login/" class="register-link">Авторизация</a>
                         <div class="actions">
                             <button type="button" id="next-button" class="next-button login-button">Далее</button>
                         </div>
@@ -74,10 +83,24 @@
                                 <h3>Пароль</h3>
                                 <input type="password" id="password" name="password1" required>
                             </div>
+
+                            {% if form.password1.errors %}
+                            <div class="error-message">
+                                {{ form.password1.errors|striptags }}
+                            </div>
+                            {% endif %}
+
                             <div class="input-field">
                                 <h3>Повторите пароль</h3>
                                 <input type="password" id="confirm-password" name="password2" required>
                             </div>
+
+                            {% if form.password2.errors %}
+                            <div class="error-message">
+                                {{ form.password2.errors|striptags }}
+                            </div>
+                            {% endif %}
+
                         </div>
                     </div>
 
