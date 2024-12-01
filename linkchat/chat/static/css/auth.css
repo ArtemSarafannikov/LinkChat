@@ -157,6 +157,8 @@ body {
   align-items: start;
   width: 100%;
   gap: 12px;
+  font-size: 20px;
+  font-weight: 500;
 }
 
 .login-card {
@@ -248,4 +250,26 @@ input:focus {
 
 .login-button:hover {
   background-color: #0056b3;
+}
+
+/* ======= Register ====== */
+
+.hidden {
+  display: none;
+}
+
+.step {
+  animation: fadeIn 0.3s ease-in-out;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }

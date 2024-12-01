@@ -14,6 +14,7 @@ def signup_view(request):
             return redirect('index', chat_id=1)
     else:
         form = SignUpForm()
+
     return render(request, 'signup.html', {'form': form})
 
 
