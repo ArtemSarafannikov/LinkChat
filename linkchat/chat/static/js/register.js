@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const step1 = document.getElementById("step-1");
     const step2 = document.getElementById("step-2");
     const nextButton = document.getElementById("next-button");
+    const previousButton = document.getElementById("previous-button");
     const form = document.getElementById("register-form");
 
     // Переход на следующий шаг
@@ -17,6 +18,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    previousButton.addEventListener("click", () => {
+        const username = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+
+        if (username && email) {
+            step2.classList.add("hidden");
+            step1.classList.remove("hidden");
+        } else {
+            alert("Пожалуйста, заполните все поля!");
+        }
+    });
+
     // Проверка перед отправкой формы
     form.addEventListener("submit", (e) => {
         const password = document.getElementById("password").value;
@@ -27,4 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Пароли не совпадают!");
         }
     });
+
+
 });

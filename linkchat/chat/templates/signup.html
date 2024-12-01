@@ -65,16 +65,25 @@
                     </div>
                 </div>
 
-                <div id="step-2" class="step hidden title-and-fields-container">
-                    <label for="password">Пароль</label>
-                    <input type="password" id="password" name="password1" required>
-                    <label for="confirm-password">Повторите пароль</label>
-                    <input type="password" id="confirm-password" name="password2" required>
-                    <p class="hint"></p>
+                <div id="step-2" class="step hidden">
+                    <div class="title-and-fields-container">
+                        <h1>Регистрация</h1>
+
+                        <div class="input-fields-container">
+                            <div class="input-field">
+                                <h3>Пароль</h3>
+                                <input type="password" id="password" name="password1" required>
+                            </div>
+                            <div class="input-field">
+                                <h3>Повторите пароль</h3>
+                                <input type="password" id="confirm-password" name="password2" required>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="actions-container">
                         <div class="actions">
-                            <a href="/signup/" class="register-link">Регистрация</a>
+                            <button type="button" id="previous-button" class="register-link">Назад</button>
                             <button type="submit" class="login-button">Готово</button>
                         </div>
                     </div>
