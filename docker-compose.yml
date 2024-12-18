@@ -7,6 +7,16 @@ services:
       - web-data:/app:rw
     ports:
       - "8000:8000"
+  nginx:
+    image: nginx:latest
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./LinkChat/cert.pem:/etc/nginx/cert.pem
+      - ./LinkChat/key.pem:/etc/nginx/key.pem
+    depends_on:
+      - web
 
 volumes:
   web-data:
