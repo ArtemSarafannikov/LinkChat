@@ -1,0 +1,48 @@
+<audio id="audio-player" controls>
+    <source src="/chat/audio/trenbolon.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+
+<script>
+    const roomName = "1"; // Уникальная комната
+    const socket = new WebSocket(`ws://${window.location.host}/ws/music-sync/${roomName}/`);
+
+    const audioPlayer = document.getElementById("audio-player");
+
+    audioPlayer.addEventListener('loadedmetadata', () => {
+        console.log('Metadata loaded, now you can change currentTime.');
+    });
+
+    audioPlayer.addEventListener('canplay', () => {
+        console.log('Audio is ready to play.');
+    });
+
+    // Воспроизведение
+    socket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        const action = data.action;
+
+        if (action === 'play') {
+            audioPlayer.play();
+        } else if (action === 'pause') {
+            audioPlayer.pause();
+        } else if (action === 'seek') {
+            audioPlayer.currentTime = data.position;
+        }
+    };
+
+    // Событие воспроизведения
+    audioPlayer.onplay = function() {
+        socket.send(JSON.stringify({
+            action: 'play',
+            position: audioPlayer.currentTime
+        }));
+    };
+
+    // Событие паузы
+    audioPlayer.onpause = function() {
+        socket.send(JSON.stringify({
+            action: 'pause'
+        }));
+    };
+</script>

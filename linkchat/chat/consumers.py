@@ -1,5 +1,6 @@
 # chat/consumers.py
 import json
+from datetime import datetime
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
@@ -70,3 +71,58 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user = User.objects.get(id=user_id)
         Message.objects.create(user=user, text=message, chat=chat)
 
+class MusicSyncConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.room_group_name = f'music_sync_{self.room_name}'
+
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+
+        user = self.scope["user"]
+        await self.accept()
+        # if user.is_authenticated:
+        #     await self.accept()
+        # else:
+        #     await self.close()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+        action = data.get('action')
+
+        if action == 'play':
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'play_music',
+                    'timestamp': datetime.utcnow().isoformat()
+                }
+            )
+        elif action == 'pause':
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'pause_music',
+                    'timestamp': datetime.utcnow().isoformat()
+                }
+            )
+
+    async def play_music(self, event):
+        await self.send(text_data=json.dumps({
+            'action': 'play',
+            'timestamp': event['timestamp']
+        }))
+
+    async def pause_music(self, event):
+        await self.send(text_data=json.dumps({
+            'action': 'pause',
+            'timestamp': event['timestamp']
+        }))
