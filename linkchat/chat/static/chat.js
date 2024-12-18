@@ -1,27 +1,22 @@
-function initChatScript(chatID, username) {
+let currentLanguage = 'original';
+let chatID = 0;
+
+function initChatScript(chat_id, username) {
+    const languageSelect = document.querySelector('#language-select');
+    chatID = chat_id;
+
+    currentLanguage = languageSelect.value;
+
+    languageSelect.addEventListener('change', (e) => {
+        currentLanguage = e.target.value;
+        loadHistory();
+    });
 
     const chatSocket = new WebSocket(
         'ws://' + window.location.host + '/ws/chat/' + chatID + '/'
     );
 
-    // Загружаем историю сообщений при загрузке страницы
-    fetch('/chat/history/' + chatID)
-        .then(response => response.json())
-        .then(data => {
-        const chatLog = document.querySelector('#chat-log');
-        data.reverse().forEach(message => {
-            const messageElement = document.createElement('p');
-
-            const usernameElement = document.createElement('b');
-            usernameElement.textContent = message.username;
-
-            messageElement.appendChild(usernameElement)
-            messageElement.appendChild(document.createTextNode(`: ${message.text}`));
-
-            chatLog.appendChild(messageElement);
-        });
-        chatLog.scrollTop = chatLog.scrollHeight;  // Прокручиваем вниз
-    });
+    loadHistory();
 
     chatSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
@@ -45,8 +40,13 @@ function initChatScript(chatID, username) {
     function sendMessage() {
         const messageInputDom = document.querySelector('#chat-message-input');
         const message = messageInputDom.value;
+
         if (message.trim() !== "") {
-            chatSocket.send(JSON.stringify({'message': message, 'username': username, 'chat_id': chatID}));
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'username': username,
+                'chat_id': chatID,
+            }));
             messageInputDom.value = '';
         }
     }
@@ -60,5 +60,40 @@ function initChatScript(chatID, username) {
             sendMessage();
             e.preventDefault();  // Предотвращаем создание новой строки
         }
+    });
+}
+
+function loadHistory() {
+    const chatLog = document.querySelector('#chat-log');
+    const translateIndicator = document.querySelector('#translate-indicator');
+
+    if (currentLanguage != 'original') {
+        translateIndicator.textContent = 'Переводим...';
+        translateIndicator.style.display = 'block';
+    }
+
+    fetch('/chat/history/' + chatID + '/?language=' + currentLanguage)
+        .then(response => response.json())
+        .then(data => {
+            chatLog.innerHTML = ''
+            data.reverse().forEach(message => {
+                const messageElement = document.createElement('p');
+
+                const usernameElement = document.createElement('b');
+                usernameElement.textContent = message.username;
+
+                messageElement.appendChild(usernameElement)
+                messageElement.appendChild(document.createTextNode(`: ${message.text}`));
+
+                chatLog.appendChild(messageElement);
+            });
+            chatLog.scrollTop = chatLog.scrollHeight;
+        })
+        .catch(error => {
+            console.error('Error loading history: ', error)
+            translateIndicator.textContent = 'Ошибка перевода';
+        })
+        .finally(() => {
+            translateIndicator.style.display = 'none';
     });
 }

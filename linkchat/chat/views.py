@@ -2,17 +2,28 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth.models import User
+from googletrans import Translator
 from .models import Message, Chat
 
 
 def message_history(request, chat_id):
-    messages = Message.objects.filter(chat_id=chat_id).order_by('-timestamp')[:50]  # последние 50 сообщений
+    messages = Message.objects.filter(chat_id=chat_id).order_by('-timestamp')
     messages_data = []
+    language = request.GET.get('language', 'original')
+
+    translator = Translator()
+
     for message in messages:
+        message_text = message.text
+        if language != 'original':
+            try:
+                message_text = translator.translate(message.text, dest=language).text
+            except Exception as e:
+                print(e)
         messages_data.append(
             {
                 "username": message.user.username,
-                "text": message.text,
+                "text": message_text,
                 "timestamp": message.timestamp.isoformat()
             }
         )
