@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat UI</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/chat.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="sidebar">
+            <div class="menu-icon">☰</div>
+            <div class="search">
+                <input type="text" placeholder="Search">
+            </div>
+            <div class="chat-list">
+                <div class="chat-item">
+                    <div class="chat-avatar"></div>
+                    <div class="chat-details">
+                        <div class="chat-name">Link Chat</div>
+                        <div class="chat-update">Link Chat was updated.</div>
+                    </div>
+                    <div class="chat-time">19:48</div>
+                    <div class="notification-badge">1</div>
+                </div>
+                <div class="chat-item active">
+                    <img src="avatar.png" alt="User" class="chat-avatar">
+                    <div class="chat-details">
+                        <div class="chat-name">Артем Сарафанников</div>
+                        <div class="chat-update">You: i don't remember anything 😁</div>
+                    </div>
+                    <div class="chat-time">18:16</div>
+                </div>
+            </div>
+        </div>
+        <div class="chat-window">
+            <div class="chat-header">
+                <div class="chat-profile">
+                    <img src="avatar.png" alt="User" class="profile-img">
+                    <div>
+                        <div class="profile-name">Артем Сарафанников</div>
+                        <div class="profile-status">last seen 5 mins ago</div>
+                    </div>
+                </div>
+            </div>
+            <div class="messages">
+                <div class="message received">
+                    <p>OMG 😲 do you remember what you did last night at the work night out?</p>
+                    <span class="time">18:12 ✓</span>
+                </div>
+                <div class="message sent">
+                    <p>no haha</p>
+                    <span class="time">18:16 ✓</span>
+                </div>
+                <div class="message sent">
+                    <p>i don't remember anything 😁</p>
+                    <span class="time">18:16 ✓</span>
+                </div>
+            </div>
+            <div class="message-input">
+                <input id="chat-message-input" type="text" placeholder="Message">
+                <button id="chat-message-submit" type="submit">➤</button>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/chat.js' %}"></script>
+</body>
+</html>

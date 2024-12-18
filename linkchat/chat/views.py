@@ -7,7 +7,7 @@ from .models import Message, Chat
 
 
 def message_history(request, chat_id):
-    messages = Message.objects.filter(chat_id=chat_id).order_by('-timestamp')
+    messages = Message.objects.filter(chat_id=chat_id).order_by('-timestamp')[::-1]
     messages_data = []
     language = request.GET.get('language', 'original')
 
@@ -22,7 +22,7 @@ def message_history(request, chat_id):
                 print(e)
         messages_data.append(
             {
-                "username": message.user.username,
+                "msg_type": "sent" if request.user.id == message.user_id else "received",
                 "text": message_text,
                 "timestamp": message.timestamp.isoformat()
             }
@@ -31,9 +31,11 @@ def message_history(request, chat_id):
 
 
 @login_required
-def index(request, chat_id):
-    try:
-        chat = Chat.objects.get(id=chat_id)
-    except Chat.DoesNotExist:
-        return render(request, '404.html')
-    return render(request, 'index.html', { 'chat': chat })
+def get_chats(request):
+    chats_data = Chat.objects.filter(patricipants=request.user).values('id', 'name')
+    return JsonResponse(list(chats_data), safe=False)
+
+
+@login_required
+def chat(request):
+    return render(request, 'chat.html')
