@@ -2,11 +2,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const loader = document.querySelector(".loader");
     const chatList = document.querySelector(".chat-list");
     const chatWindow = document.querySelector(".chat-window");
+    const audioPlayer = document.getElementById("audio-player");
+    const playPauseBtn = document.getElementById("playPauseBtn");
     const messagesContainer = document.querySelector(".messages");
     const translateButton = document.getElementById('translate-button');
-    const apiUrl = "http://localhost:8000/";
+    const apiUrl = 'http://' + window.location.host + '/';
     const defaultAvatarUrl = "https://yt3.googleusercontent.com/WKEMgcDn7rNchoE_q3jBBwyXQC5hmkPL4Q3Pk9d4HTJ8DJuLP-rapuNRYtVsD5TS9dUg8DIBsQ=s160-c-k-c0x00ffffff-no-rj";
     let chatSocket;
+    let musicSocket;
     let translateButtonActive = false;
     let currentChatID;
     let currentChatName;
@@ -83,6 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (chatSocket) {
             chatSocket.close();
         }
+        if (musicSocket) {
+            musicSocket.close();
+        }
         try {
             const response = await fetch(apiUrl + `chat/history/${chatId}/?language=${language}`);
 
@@ -112,6 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
+            musicSync();
         } catch (error) {
             console.error("Failed to load chat history:", error);
             messagesContainer.innerHTML = "<p>Error loading chat history.</p>";
@@ -135,6 +142,50 @@ document.addEventListener("DOMContentLoaded", () => {
         messages.forEach((msg) => {
             renderMessage(msg);
         });
+    }
+
+    function musicSync() {
+        playPauseBtn.addEventListener("click", () => {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playPauseBtn.textContent = "❚❚";
+            } else {
+                audioPlayer.pause();
+                playPauseBtn.textContent = "▶";
+            }
+        });
+
+        audioPlayer.addEventListener("ended", () => {
+            playPauseBtn.textContent = "▶";
+        });
+
+        const musicSocket = new WebSocket(`ws://${window.location.host}/ws/music-sync/${currentChatID}/`);
+
+        musicSocket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            const action = data.action;
+
+            if (action === 'play') {
+                audioPlayer.play();
+                playPauseBtn.textContent = "❚❚";
+            } else if (action === 'pause') {
+                audioPlayer.pause();
+                playPauseBtn.textContent = "▶";
+            }
+        };
+
+        audioPlayer.onplay = function() {
+            musicSocket.send(JSON.stringify({
+                action: 'play',
+                position: audioPlayer.currentTime
+            }));
+        };
+
+        audioPlayer.onpause = function() {
+            musicSocket.send(JSON.stringify({
+                action: 'pause'
+            }));
+        };
     }
 
     function renderMessage(msg) {

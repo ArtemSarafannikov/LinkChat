@@ -9,14 +9,6 @@
 
     const audioPlayer = document.getElementById("audio-player");
 
-    audioPlayer.addEventListener('loadedmetadata', () => {
-        console.log('Metadata loaded, now you can change currentTime.');
-    });
-
-    audioPlayer.addEventListener('canplay', () => {
-        console.log('Audio is ready to play.');
-    });
-
     // Воспроизведение
     socket.onmessage = function(event) {
         const data = JSON.parse(event.data);

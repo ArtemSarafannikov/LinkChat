@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,6 +34,14 @@
         </div>
         <div class="loader"></div>
         <div class="chat-window">
+            <div class="audio-player">
+                <button id="playPauseBtn">▶</button>
+                <span id="currentTrack">Оппозиция - Тренболон</span>
+                <audio id="audio-player">
+                    <source src="/chat/audio/trenbolon.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
             <div class="chat-header">
                 <div class="chat-profile">
                     <img src="avatar.png" alt="User" class="profile-img">
