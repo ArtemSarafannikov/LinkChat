@@ -12,9 +12,6 @@
     <div class="chat-container">
         <div class="sidebar">
             <div class="menu-icon">☰</div>
-            <div class="search">
-                <input type="text" placeholder="Search">
-            </div>
             <div class="chat-list">
                 <div class="chat-item">
                     <div class="chat-avatar"></div>
@@ -35,6 +32,7 @@
                 </div>
             </div>
         </div>
+        <div class="loader"></div>
         <div class="chat-window">
             <div class="chat-header">
                 <div class="chat-profile">
@@ -44,6 +42,11 @@
                         <div class="profile-status">last seen 5 mins ago</div>
                     </div>
                 </div>
+                <button id="translate-button" class="icon-button">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20.2 1V20.2M1 20.2V1M6.22856 15.4L10.6 5.20003L13.3061 11.5143M13.3061 11.5143L14.9714 15.4M13.3061 11.5143H8.17142" stroke="#3F3F3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
             </div>
             <div class="messages">
                 <div class="message received">

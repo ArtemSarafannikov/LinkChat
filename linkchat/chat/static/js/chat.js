@@ -1,10 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const loader = document.querySelector(".loader");
     const chatList = document.querySelector(".chat-list");
     const chatWindow = document.querySelector(".chat-window");
     const messagesContainer = document.querySelector(".messages");
+    const translateButton = document.getElementById('translate-button');
     const apiUrl = "http://localhost:8000/";
     const defaultAvatarUrl = "https://yt3.googleusercontent.com/WKEMgcDn7rNchoE_q3jBBwyXQC5hmkPL4Q3Pk9d4HTJ8DJuLP-rapuNRYtVsD5TS9dUg8DIBsQ=s160-c-k-c0x00ffffff-no-rj";
     let chatSocket;
+    let translateButtonActive = false;
+    let currentChatID;
+    let currentChatName;
 
     function sendMessage(chatId) {
         const messageInputDom = document.querySelector('#chat-message-input');
@@ -71,27 +76,28 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    async function loadChatHistory(chatId, chatName, chatAvatar) {
+    async function loadChatHistory(chatId, chatName, language = 'original') {
+        loader.style.display = "block";
+        chatWindow.style.display = "none";
+
         if (chatSocket) {
             chatSocket.close();
         }
         try {
-            const response = await fetch(apiUrl + `chat/history/${chatId}`);
+            const response = await fetch(apiUrl + `chat/history/${chatId}/?language=${language}`);
 
             if (!response.ok) {
                 throw new Error(`Error: ${response.status}`);
             }
 
             const messages = await response.json();
-            renderChatWindow(chatId, messages, chatName, chatAvatar);
+            renderChatWindow(chatId, messages, chatName);
 
             chatSocket = new WebSocket(
                 'ws://' + window.location.host + '/ws/chat/' + chatId + '/'
             );
-            console.log("WebSocket connected to chat " + chatId);
             chatSocket.onmessage = function(e) {
                 const data = JSON.parse(e.data);
-                console.log(data);
                 renderMessage(data);
             }
 
@@ -110,9 +116,14 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Failed to load chat history:", error);
             messagesContainer.innerHTML = "<p>Error loading chat history.</p>";
         }
+        chatWindow.style.display = "flex";
+        loader.style.display = "none";
+        scrollToBottom();
     }
 
     function renderChatWindow(chatId, messages, chatName, chatAvatar) {
+        currentChatID = chatId;
+        currentChatName = chatName;
         // Обновляем заголовок чата
         chatWindow.querySelector(".profile-name").textContent = chatName;
 //        chatWindow.querySelector(".profile-img").src = chatAvatar || 'default-avatar.png';
@@ -124,10 +135,6 @@ document.addEventListener("DOMContentLoaded", () => {
         messages.forEach((msg) => {
             renderMessage(msg);
         });
-
-        // Показываем chat-window
-        chatWindow.style.display = "flex";
-        scrollToBottom();
     }
 
     function renderMessage(msg) {
@@ -150,7 +157,22 @@ document.addEventListener("DOMContentLoaded", () => {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
+    translateButton.addEventListener('click', () => {
+        translateButtonActive = !translateButtonActive;
+
+        // Изменение класса для изменения цвета
+        translateButton.classList.toggle('active', translateButtonActive);
+
+        // Отправка запроса на API сервер
+        if (translateButtonActive) {
+            loadChatHistory(currentChatID, currentChatName, 'ru');
+        } else {
+            loadChatHistory(currentChatID, currentChatName);
+        }
+    });
+
     // Запуск функции загрузки чатов при загрузке страницы
     loadChats();
     chatWindow.style.display = "none";
+    loader.style.display = "none";
 });
