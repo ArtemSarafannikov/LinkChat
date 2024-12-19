@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
 //            `;
         messageDiv.innerHTML = `
             <p>${msg.text}</p>
-            <span class="time">10:00</span>
+            <span class="time">${msg.timestamp}</span>
         `;
         messagesContainer.appendChild(messageDiv);
         scrollToBottom();

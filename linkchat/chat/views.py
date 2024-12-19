@@ -31,7 +31,7 @@ def message_history(request, chat_id):
             {
                 "msg_type": "sent" if request.user.id == message.user_id else "received",
                 "text": message_text,
-                "timestamp": message.timestamp.isoformat()
+                "timestamp": message.timestamp.strftime("%H:%M")
             }
         )
     return JsonResponse(messages_data, safe=False)
